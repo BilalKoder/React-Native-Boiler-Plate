@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
       textAlign: 'center',
     },
     focusCell: {
-      borderBottomColor: '#007AFF',
+      borderBottomColor: Colors.APP_PRIMARY_COLOR,
       borderBottomWidth: 2,
     },
   

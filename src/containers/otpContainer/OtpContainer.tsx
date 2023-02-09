@@ -7,7 +7,7 @@ import { navigate } from '../../services/navigationService';
 import NavigationRoutes from '../../navigators/NavigationRoutes';
 
 
-export default function useResetContainer() {
+export default function useOtpContainer() {
     const { t } = useTranslation(["errors"])
 
     const { control, handleSubmit } = useForm<ResetFormType>({
@@ -25,7 +25,7 @@ export default function useResetContainer() {
             .max(255, t("login_password_max")),
             // ConfirmNewPassword: yup.string().oneOf([yup.ref("NewPassword")], t("reset_confirm_password_message")),
             ConfirmNewPassword: yup.string()
-            .required('Password is required')
+            .required('Password is mendatory')
             .oneOf([yup.ref('NewPassword')], 'Passwords does not match'),
         })
       ),

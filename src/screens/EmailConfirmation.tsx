@@ -9,14 +9,17 @@ import EmailIcon from '../assets/logo/email.png';
 import PasswordIcon from '../assets/logo/password.png';
 import AppButton from '../component/Buttons/AppButton';
 import useLoginContainer from '../containers/loginContainer/LoginContainer';
+import useEmailConfirmationContainer from '../containers/confirmationContainer/EmailConfirmation';
 import { Colors, Fonts } from '../themes';
 import { navigate } from '../services/navigationService';
 import NavigationRoutes from '../navigators/NavigationRoutes';
 
+
 export default function EmailConfirmation() {
     const { t } = useTranslation(["common"])
     const [titleText, setTitleText] = React.useState("Enter Email for Confirmation");
-    const { control, handleSubmit, handleOnSignUp } = useLoginContainer();
+    // const { control, handleSubmit, handleOnSignUp } = useLoginContainer();
+    const { control, handleSubmit } = useEmailConfirmationContainer();
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.content} bounces={false}>
@@ -27,7 +30,7 @@ export default function EmailConfirmation() {
               {titleText}
             </Text>
           <InputField control={control} placeholder="Email"  name="Email"  wrapperStyle={styles.inputStyle} LeftIcon={EmailIcon}  /> 
-          <AppButton title={t('submit')} onPress={()=> navigate(NavigationRoutes.AUTH_STACK.OTP_VERIFICATION)} style={{marginVertical:10,borderRadius: 8,height:45}}  textStyle={{fontSize:18,fontWeight:600,lineHeight:22}}/>
+          <AppButton title={t('submit')}  onPress={handleSubmit} style={{marginVertical:10,borderRadius: 8,height:45}}  textStyle={{fontSize:18,fontWeight:600,lineHeight:22}}/>
         </ScrollView>
       </SafeAreaView>
     );

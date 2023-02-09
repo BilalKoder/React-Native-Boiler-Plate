@@ -5,10 +5,8 @@ export interface LoginFormType {
 }
 
 export type LoginPayload = {
-    version: string,
-    username: string,
+    emailOrUserName: string,
     password: string,
-    type: user_login_type,
 }
 
 export type LoginResponse = {

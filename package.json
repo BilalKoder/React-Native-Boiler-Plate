@@ -19,6 +19,7 @@
     "@tanstack/query-core": "4.12.0",
     "@tanstack/react-query": "^4.12.0",
     "@tanstack/react-query-persist-client": "^4.12.0",
+    "adb": "^0.2.0",
     "apisauce": "^2.1.6",
     "i18next": "^21.9.1",
     "lodash.debounce": "^4.0.8",

@@ -28,7 +28,8 @@ export default function useStartupContainer() {
   const getLandingPageFormStatus = React.useCallback((status: number) => {
     switch (status) {
       default:
-        return NavigationRoutes.APP_STACK.HOME;
+        // return NavigationRoutes.APP_STACK.HOME;
+        return NavigationRoutes.APP_STACK.NOTIFICATION;
     }
   }, []);
 

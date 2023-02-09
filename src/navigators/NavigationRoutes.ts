@@ -13,6 +13,8 @@ const NavigationRoutes = {
     APP_STACK: {
         HOME: "HOME_SCREEN",
         MESSAGE_SCREEN:"MESSAGE_SCREEN",
+        NOTIFICATION: "NOTIFICATION_SCREEN",
+        CHAT_SCREENS: "CHAT_SCREENS",
 
     }
 }

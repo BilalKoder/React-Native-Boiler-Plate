@@ -22,6 +22,7 @@ export default function useLoginContainer() {
 
   const { mutate: loginUser } = useMutation(login, {
     onSuccess: (data: LoginResponse) => {
+      console.log(data)
       setUserAuthentication(data);
     }
   });
@@ -38,23 +39,24 @@ export default function useLoginContainer() {
     },
     resolver: yupResolver(
       yup.object({
-        Email: yup.string().email().required(t("login__email_message")),
+        Email: yup.string().required(t("login__email_message")),
         Password: yup
           .string()
           .required(t("login_password_required"))
-          .min(6, t("login_password_min"))
-          .max(255, t("login_password_max")),
+          // .min(6, t("login_password_min"))
+          // .max(255, t("login_password_max")),
       })
     ),
   });
 
   const handleSubmitForm = (data: LoginFormType) => {
-    const payload: LoginPayload = {
-      username: data.Email,
+    console.log(data)
+    // navigate(NavigationRoutes.AUTH_STACK.NOTIFICATION)
+    const payload = {
+      emailOrUserName: data.Email,
       password: data.Password,
-      type: user_login_type.EMAIL,
-      version: versionService.getVersionNumber(),
     };
+    console.log(`payload`,payload)
     loginUser(payload);
   };
 

@@ -26,10 +26,10 @@ export default function LoginScreen() {
             <Text style={styles.titleText} >
               {titleText}
             </Text>
-          <InputField control={control} placeholder="Email"  name="Email" wrapperStyle={styles.inputStyle} LeftIcon={EmailIcon}  /> 
+          <InputField control={control} placeholder="Email or Username"  name="Email" wrapperStyle={styles.inputStyle} LeftIcon={EmailIcon}  /> 
           <InputField control={control} placeholder="Password" name="Password" wrapperStyle={styles.inputStyle}  LeftIcon={PasswordIcon}  />
           <AppButton title="Forgot Password?" style={{backgroundColor: 'transparent', paddingHorizontal: 0, paddingVertical: 0, alignSelf: 'flex-end',paddingBottom:20}} textStyle={{color:"#4E5654",fontSize:15}} onPress={()=> navigate(NavigationRoutes.AUTH_STACK.EMAIL_CONFIRMATION)} />
-          <AppButton title={t('signIn')} onPress={()=> navigate(NavigationRoutes.AUTH_STACK.NOTIFICATION)} style={{marginVertical:10,borderRadius: 8,height:Metrics.verticalScale(58)}}  textStyle={{fontSize:18,fontWeight:600,lineHeight:22}}/>
+          <AppButton title={t('signIn')} onPress={handleSubmit} style={{marginVertical:10,borderRadius: 8,height:Metrics.verticalScale(58)}}  textStyle={{fontSize:18,fontWeight:600,lineHeight:22}}/>
         </ScrollView>
       </SafeAreaView>
     );
