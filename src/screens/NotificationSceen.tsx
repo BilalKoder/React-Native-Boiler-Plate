@@ -155,7 +155,7 @@ export default function NotificationScreen() {
             </View>
           {persons.map((person) => {
             return (
-                <Pressable key={person.id} onPress={()=> navigate(NavigationRoutes.AUTH_STACK.CHAT_SCREENS)} style={styles.innerContainer}>
+                <Pressable key={person.id} onPress={()=> navigate(NavigationRoutes.APP_STACK.CHAT_SCREENS)} style={styles.innerContainer}>
                     <View style={{
                   padding: Metrics.scale(10),
                 }}  > 

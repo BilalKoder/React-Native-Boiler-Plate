@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { View,Text, StyleSheet, SafeAreaView, TouchableOpacity, Image } from "react-native"
 import { Bubble, Composer, GiftedChat, Send } from 'react-native-gifted-chat'
-import { centerAlign } from '../themes/AppStyles';
+
 export default function MessageScreen() {
         const [messages, setMessages] = React.useState([]);
       

@@ -15,10 +15,15 @@ export default function AppStack(props: AppStackProps) {
     const { t } = useTranslation(["pageTitles"])
     return (
       <Stack.Navigator initialRouteName={initialRouteName}>
-       
+
+        <Stack.Screen
+          options={{ title: t("NOTIFICATIONS") }}
+          name={NavigationRoutes.APP_STACK.NOTIFICATION}
+          getComponent={() => require("../screens/NotificationSceen").default}
+        />
          <Stack.Screen
           options={{ title: t("MESSAGE SCREEN") }}
-          name={NavigationRoutes.APP_STACK.MESSAGE_SCREEN}
+          name={NavigationRoutes.APP_STACK.CHAT_SCREENS}
           getComponent={() => require("../screens/MessageScreen").default}
         />
          <Stack.Screen

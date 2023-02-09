@@ -57,11 +57,6 @@ export default function AuthStack() {
               getComponent={() => require('../screens/NotificationSceen').default}
             />
 
-      <Stack.Screen
-          options={{ title: t("CHAT") }}
-          name={NavigationRoutes.AUTH_STACK.CHAT_SCREENS}
-          getComponent={() => require('../screens/MessageScreen').default}
-        />
       </Stack.Navigator>
     );
 }
