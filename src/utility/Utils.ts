@@ -18,7 +18,20 @@ class utility {
   }
 
   getValue(...param: any[]) {
+   
+    
     return get(...param);
+  }
+
+  getAnyOne(data: any, param: any[]) {
+    let message =  "something went wrong"
+    param.map(v => {
+      
+      if(typeof get(data, v) === "string" ) message = get(data, v);
+      
+    })
+
+    return message
   }
 
   debounce(...param: any[]) {

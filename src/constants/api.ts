@@ -6,7 +6,7 @@ export const API_CONFIG = {
   BASE_URL_QA: "",
   DELETE: "delete",
   BASE_URL_REL: "",
-  BASE_URL_DEV: "https://dev-shadow-parentpass-as.azurewebsites.net/api/v1/",
+  BASE_URL_DEV: "https://api-tutor-of-dragon.appnofy.com/api/v1",
   BASE_URL_PROD: "",
 };
 

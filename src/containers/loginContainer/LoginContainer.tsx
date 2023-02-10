@@ -24,7 +24,10 @@ export default function useLoginContainer() {
     onSuccess: (data: LoginResponse) => {
       console.log(data)
       setUserAuthentication(data);
+    },
+    onError: (data: LoginResponse) => {
     }
+  
   });
 
   const handleOnSignUp = useCallback(() => {

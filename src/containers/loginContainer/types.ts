@@ -9,7 +9,15 @@ export type LoginPayload = {
     password: string,
 }
 
+export type EmailResetPayload = {
+    email: string,
+}
+
 export type LoginResponse = {
     email: string,
     token: string,
+}
+
+export type EmailConfirmationResponse = {
+    message: string,
 }

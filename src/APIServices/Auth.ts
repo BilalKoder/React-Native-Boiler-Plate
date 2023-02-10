@@ -1,6 +1,6 @@
 import apiService from "../services/apiService";
 import { SERVICE_CONFIG_URLS } from "../constants/api_urls";
-import { LoginPayload } from "../containers/loginContainer/types";
+import { EmailResetPayload, LoginPayload } from "../containers/loginContainer/types";
 import { getUserType } from "../containers/startupContainer/types";
 import versionService from "../services/versionService";
 
@@ -13,6 +13,19 @@ export const login = async (payload: LoginPayload) => {
     return data;
   }
   throw response.message;
+};
+
+export const emailConfirmation = async (payload: EmailResetPayload) => {
+  const  responseTemp =  await apiService.post(
+    SERVICE_CONFIG_URLS.AUTH.FORGET,
+    payload
+  );
+  const { ok, response, data } = responseTemp;
+  console.log(response,data);
+  if (ok) {
+    return response.message;
+  }
+  throw response?.message;
 };
 
 export const getUser = async () => {

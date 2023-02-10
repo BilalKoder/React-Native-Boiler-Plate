@@ -37,22 +37,26 @@ async function deleteReq(url: string, queryParams: object, config?: ApisauceConf
 }
 
 function handleResponse(response: ApiResponse<any>) {
+ 
+  
   const mutatedResponse = {
     ok: response.ok,
     status: response.status,
     response: {
       code: Utils.getValue(response.data, 'response.code', HTTP_STATUS.SERVER_ERROR),
       //data: response?.data?.data,
-      message: Utils.getValue(
-        response.data,
-        'response.message',
-        'Something went wrong',
+      message: Utils.getAnyOne(
+        response,
+        ['data.error',
+        'data.message',
+        "something went wrong"]
       ),
       errorCode: Utils.getValue(response.data, 'response.errorCode', HTTP_STATUS.BAD_REQUEST),
     },
   };
   const data = Utils.getValue(response.data, 'data', response.data);
 
+ 
   if (response.status === HTTP_STATUS.UNAUTHORIZED) {
     // snackbarService.fail('You are not authorized to perform this action');
     return {

@@ -22,7 +22,7 @@ export default function AppStack(props: AppStackProps) {
           getComponent={() => require("../screens/NotificationSceen").default}
         />
          <Stack.Screen
-          options={{ title: t("MESSAGE SCREEN") }}
+          options={{ title: t("AP-PHYSICS") }}
           name={NavigationRoutes.APP_STACK.CHAT_SCREENS}
           getComponent={() => require("../screens/MessageScreen").default}
         />
