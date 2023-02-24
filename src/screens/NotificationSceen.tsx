@@ -1,6 +1,5 @@
-import React from 'react';
-import {View, StyleSheet,ScrollView,FlatList ,Text,Image,ImageBackground} from 'react-native';
-
+import React,{useEffect, useState} from 'react';
+import { View, StyleSheet, ScrollView, FlatList, Text, Image, ImageBackground, Alert } from 'react-native';
 import Metrics from '../utility/Metrics';
 import { useTranslation } from 'react-i18next';
 import InputField from '../component/InputField';
@@ -11,204 +10,168 @@ import useSignupContainer from '../containers/signupContainer/SignupContainer';
 import NavigationRoutes from '../navigators/NavigationRoutes';
 import { navigate } from '../services/navigationService';
 import { Pressable } from 'react-native';
+import loginContext from '../contexts/loginContext';
+import { LoginContext } from '../contexts/loginContext/types';
+import { getItem } from '../services/storageService';
+import STORAGE_CONST from '../constants/storage';
+import DefaultImage from '../../src/assets/logo/Ellipse2309.png';
+import { useQuery } from '@tanstack/react-query';
+import { Spinner,Progress, Box} from "@chakra-ui/react";
+import axios from 'axios';
+import { userGetNotifications } from '../apiCalls/getNotifications';
+import moment from 'moment'
+import FlatListHandler from '../component/FlatlistHandler';
+import { APP_PRIMARY_COLOR } from '../themes/Colors';
+import { updateNotifications } from '../apiCalls/updateNotifications';
 
-const persons = [
-    {
-      id: "1",
-        name: "Class has been reschedule",
-        nameTwo: 'Kindly recheck the calendar',
-        nameThree :'04-Jan-2023 06:00 PM',
-    },
-    {
-      id: "2",
-        name: "Class has been reschedule",
-        nameTwo: 'Kindly recheck the calendar',
-        nameThree :'04-Jan-2023 06:00 PM',
-        
-      
-    },
-    {
-      id: "3",
-        name: "Class has been reschedule",
-        nameTwo: 'Kindly recheck the calendar',
-        nameThree :'04-Jan-2023 06:00 PM',
-        
-      
-    },
-    {
-      id: "4",
-        name: "Class has been reschedule",
-        nameTwo: 'Kindly recheck the calendar',
-        nameThree :'04-Jan-2023 06:00 PM',
-        
-      
-    },
-    {
-      id: "5",
-        name: "Class has been reschedule",
-        nameTwo: 'Kindly recheck the calendar',
-        nameThree :'04-Jan-2023 06:00 PM',
-        
-      
-    },
-    {
-      id: "6",
-        name: "Class has been reschedule",
-        nameTwo: 'Kindly recheck the calendar',
-        nameThree :'04-Jan-2023 06:00 PM',
-        
-      
-    },
-    {
-      id: "7",
-        name: "Class has been reschedule",
-        nameTwo:'Kindly recheck the calendar',
-      
-    },
-    {
-      id: "8",
-        name: "Class has been reschedule",
-        nameTwo: 'Kindly recheck the calendar',
-        nameThree :'04-Jan-2023 06:00 PM',
-        
-      
-    },
-    {
-      id: "9",
-        name: "Class has been reschedule",
-        nameTwo: 'Kindly recheck the calendar',
-        nameThree :'04-Jan-2023 06:00 PM',
-        
-      
-    },
-    {
-      id: "10",
-        name: "Class has been reschedule",
-        nameTwo: 'Kindly recheck the calendar',
-        nameThree :'04-Jan-2023 06:00 PM',
-        
-      
-    },
-  
-    {
-      id: "11",
-        name: "Class has been reschedule",
-        nameTwo: 'Kindly recheck the calendar',
-        nameThree :'04-Jan-2023 06:00 PM',
-        
-      
-    },
-    {
-      id: "12",
-        name: "Class has been reschedule",
-        nameTwo: 'Kindly recheck the calendar',
-        nameThree :'04-Jan-2023 06:00 PM',
-        
-      
-    },
-    {
-      id: "13",
-        name: "Class has been reschedule",
-        nameTwo:'Kindly recheck the calendar',
-        nameThree :'04-Jan-2023 06:00 PM',
-      
-    },
-    {
-      id: "14",
-        name: "Class has been reschedule",
-        nameTwo:'Kindly recheck the calendar',
-        nameThree :'04-Jan-2023 06:00 PM',
-      
-    },
-    {
-      id: "15",
-        name: "Class has been reschedule",
-        nameTwo:'Kindly recheck the calendar',
-        nameThree :'04-Jan-2023 06:00 PM',
-      
-    },
-  ];
+const normalizeArray = (data) => {
+  const dump = data?.pages?.flatMap((item) => item?.data);
+  return dump;
+};
+
 export default function NotificationScreen() {
+
+useEffect (()=> {
+  checkUserTime()
+},[])
+
+  function checkUserTime(){
+
+    const today = new Date()
+    const curHr = today.getHours()
+  
+    if (curHr < 12) {
+      return 'Morning'
+    } else if (curHr < 18) {
+      return 'Afternoon'
+    } else {
+     return 'Evening'
+    }
+  }
+
+
+  const user = getItem(STORAGE_CONST.GET_USER)
+  const params ={
+    to_user: user?.id,
+    notificationType:"MOBILE",
+  }
+  const { data = [], isLoading, isSuccess, ...meta } = userGetNotifications(
+    // {
+    //   select: normalizeArray,
+    // },
+    params);
+
+  
+
+    const markAllAsRead = async () =>{
+      
+      const notify = normalizeArray(data)
+      if(notify){
+        const dataIds = notify?.map(element => element?.id);
+        const payload ={
+          notification_id :dataIds,
+          notificationType: "MOBILE"
+        }
+  
+         const dataT = await updateNotifications(payload,user?.id);
+
+         meta.refetch()
+
+      }
+     }
+   
+
+  const RenderListItem = React.useCallback(
+    ({item}: any, index) => { 
+      return (
+        <Pressable key={'test-'+index} onPress={() => navigate(NavigationRoutes.APP_STACK.CHAT_SCREENS)} style={styles.innerContainer}>
+        <View style={{
+          padding: Metrics.scale(10),
+        }}  >
+          <View style={{ backgroundColor: '#F4F4F4', borderRadius: Metrics.scale(100), width: Metrics.scale(50), height: Metrics.scale(50), display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Image source={require("../../src/assets/logo/notification.png")} />
+          </View>
+        </View>
+        <View style={{ padding: Metrics.scale(10), paddingBottom: Metrics.scale(15) }}>
+          <Text style={styles.item}>{item?.attributes?.body}</Text>
+          <Text style={styles.itemTwo}>{item?.attributes?.lastMessage??'No recent chat'}</Text>
+          <Text style={styles.itemTwoDate}>{item?.attributes?.createdAt ?  moment(item?.attributes?.createdAt).format("MMMM Do YYYY, h:mm:ss a"): ''}</Text>
+        </View>
+        <View style={{
+          display: 'flex',
+          alignItems: 'center', flexDirection: 'row', paddingLeft: Metrics.scale(50), paddingBottom: Metrics.scale(25),paddingRight:Metrics.scale(15)
+        }}>
+          {item?.attributes?.status == 'UNSEEN' && (
+            <View style={{ backgroundColor: '#1FA022', borderRadius: Metrics.scale(100), width: Metrics.scale(12), height: 10, display: 'flex', justifyContent: 'center', alignItems: 'center' }}></View>
+          )}
+        </View>
+      </Pressable>
+      );
+    },
+    [data],
+  );
   return (
     <SafeAreaView style={styles.container}>
-    <ScrollView showsVerticalScrollIndicator={false} style={styles.mainContainer}>
-      <View style={styles.innerContainer}>
-                    <View style={{
-        
-        padding: Metrics.scale(10),
-      }}>
-                        <Image source={require("../../src/assets/logo/Ellipse2309.png")} />
-                    </View>
-                    <View style={{
-        padding: Metrics.scale(10),
-
-        
-      }}>
-                        <Text style={styles.itemTwoTop}>Good Morning</Text>
-                        <Text style={styles.itemTop}>Andrew Parker</Text>
-                    </View>
-                    <View >
-                    <Text style={styles.itemThree}>Mark All as read</Text>
-
-                    </View>
-                    
+      <View style={styles.mainContainer}>
+        <View style={{ ...styles.innerContainerHead }}>
+          <View style={styles.innerContainerHead}>
+            <View style={{ padding: Metrics.scale(10) }}>
+              <Image source={user?.profileImage ? { uri: user?.profileImage } : DefaultImage}
+                style={{ width: 52, height: 52, borderRadius: 50 }}
+              />
             </View>
-          {persons.map((person) => {
-            return (
-                <Pressable key={person.id} onPress={()=> navigate(NavigationRoutes.APP_STACK.CHAT_SCREENS)} style={styles.innerContainer}>
-                    <View style={{
-                  padding: Metrics.scale(10),
-                }}  > 
-                  <View style={{ backgroundColor: '#F4F4F4', borderRadius: Metrics.scale(100), width: Metrics.scale(50), height: Metrics.scale(50), display: 'flex', justifyContent: 'center', alignItems:'center'}}>
-                  <Image source={require("../../src/assets/logo/notification.png")} />
-
-                </View>
-                    </View>
-                    <View style={{padding: Metrics.scale(10),paddingBottom: Metrics.scale(15)}}>
-                        <Text style={styles.item}>{person.name}</Text>
-                        <Text style={styles.itemTwo}>{person.nameTwo}</Text>
-                        <Text style={styles.itemTwoDate}>{person.nameThree}</Text>    
-                    </View>
-                <View style={{
-                  display: 'flex',
-                alignItems: 'center',flexDirection:'row',paddingLeft:Metrics.scale(50),paddingBottom:Metrics.scale(25)}}>
-                  <View style={{ backgroundColor: '#1FA022', borderRadius: Metrics.scale(100), width: Metrics.scale(12), height: 10, display: 'flex', justifyContent: 'center', alignItems:'center'}}></View>
-                    </View>
-                    
-            </Pressable>
-            );
-          })}
-        </ScrollView>
-        </SafeAreaView>
-      );
+            <View>
+              <Text style={styles.itemTwoTop}>Good {checkUserTime()}</Text>
+              <Text style={styles.itemTop}>{user?.name.toUpperCase()}</Text>
+            </View>
+          </View>
+          <View >
+            <AppButton  title={"Mark All as read"} style={styles.itemThree} textStyle={{color:APP_PRIMARY_COLOR,fontSize:15}} onPress={markAllAsRead}/>
+          </View>
+        </View>
+        <FlatListHandler
+          data={normalizeArray(data)}
+          renderItem={RenderListItem}
+          contentContainerStyle={{
+            // marginHorizontal: Metrics.scale(22),
+          }}
+          meta={meta}
+          listEmptyText={"No data Found"}
+          // meta={meta}
+        
+        />
+      </View>
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
 
-    container: {
-        flex: 1,
-        // paddingRight:5,
-        // paddingLeft:5,
-        // marginVertical: Metrics.verticalScale(40),
-
-    },
+  container: {
+    flex: 1,
+  },
   mainContainer: {
+    flex: 1,
     backgroundColor: '#FFFFFF',
-    //#FFFFFF
-    paddingTop:Metrics.scale(20),
+    paddingTop: Metrics.scale(0),
 
 
   },
+
   innerContainer: {
     flexDirection: 'row',
-    // display: 'flex',
     height: Metrics.scale(100),
-    // display:'flex',
-    // justifyContent: 'flex-start',
-    // alignItems:'center'
- 
-        
+
   },
+
+  innerContainerHead: {
+    flexDirection: 'row',
+    display: 'flex',
+    justifyContent: 'space-between',
+    height: Metrics.scale(100),
+    alignItems:'center'
+  },
+
   item: {
     fontFamily: 'Poppins',
     fontStyle: 'normal',
@@ -217,7 +180,7 @@ const styles = StyleSheet.create({
     lineHeight: Metrics.scale(22),
     color: '#000000',
   },
-    
+
   itemTwo: {
     fontFamily: 'Poppins',
     fontStyle: 'normal',
@@ -227,6 +190,17 @@ const styles = StyleSheet.create({
     color: '#000000',
     opacity: 0.5,
   },
+  emptyData:{
+    top:10,
+    fontFamily: 'Poppins',
+    fontStyle: 'normal',
+    fontWeight: '800',
+    fontSize: 20,
+    lineHeight: Metrics.scale(20),
+    color: '#000000',
+    opacity: 0.5,
+    justifyContent: 'center'
+  },
   itemTwoDate: {
     fontFamily: 'Poppins',
     fontStyle: 'normal',
@@ -234,27 +208,17 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: Metrics.scale(20),
     color: '#00000080',
-    paddingTop:Metrics.scale(5)
+    paddingTop: Metrics.scale(5)
   },
-    
+
   itemThree: {
-    fontFamily: 'Poppins',
-    fontStyle: 'normal',
-    fontWeight: '400',
-    fontSize: 16,
-    lineHeight: Metrics.scale(24),
-    color: '#20A023',
-    marginTop: Metrics.scale(30),
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection:'row',
-    paddingLeft:Metrics.scale(20),
-    paddingBottom:Metrics.scale(20)
+    backgroundColor: 'transparent',
+    marginRight: Metrics.scale(20),
   },
-  backImg:{
+  backImg: {
     paddingLeft: Metrics.scale(70),
-    paddingTop:Metrics.scale(70),
-    
+    paddingTop: Metrics.scale(70),
+
   },
   itemTop: {
     fontFamily: 'Poppins',
@@ -263,19 +227,17 @@ const styles = StyleSheet.create({
     fontSize: 20,
     lineHeight: Metrics.scale(22),
     color: '#000000',
-    top:10
-
+    top: 5,
+    textTransform: 'capitalize'
   },
-    
+
   itemTwoTop: {
     fontFamily: 'Poppins',
     fontStyle: 'normal',
     fontWeight: '400',
     fontSize: 16,
     lineHeight: Metrics.scale(24),
-    color: '#000000',
-    top:5
-
+    color: '#757575',
   },
-    
+
 });

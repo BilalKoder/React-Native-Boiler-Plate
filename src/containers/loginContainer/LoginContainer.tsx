@@ -13,6 +13,10 @@ import { LoginContext } from "../../contexts/loginContext/types";
 import { LoginFormType, LoginPayload, LoginResponse } from "./types";
 import { navigate } from "../../services/navigationService";
 import NavigationRoutes from "../../navigators/NavigationRoutes";
+import Snackbar from "react-native-snackbar";
+import { Colors } from "../../themes";
+import { APP_PRIMARY_COLOR } from "../../themes/Colors";
+import { Alert, LogBox } from 'react-native';
 
 export default function useLoginContainer() {
   const { t } = useTranslation(["errors"]);
@@ -22,10 +26,24 @@ export default function useLoginContainer() {
 
   const { mutate: loginUser } = useMutation(login, {
     onSuccess: (data: LoginResponse) => {
-      console.log(data)
-      setUserAuthentication(data);
+      Snackbar.show({
+        text: "Login Successfull!",
+        duration: Snackbar.LENGTH_SHORT,
+        textColor: Colors.Colors.WHITE,
+        backgroundColor: APP_PRIMARY_COLOR
+      });
+      setTimeout(() => {
+        setUserAuthentication(data);
+      }, 1000);
     },
     onError: (data: LoginResponse) => {
+      LogBox.ignoreAllLogs();
+      Snackbar.show({
+        text: "Please check your login credentials!",
+        duration: Snackbar.LENGTH_SHORT,
+        textColor: Colors.Colors.WHITE,
+        backgroundColor: Colors.Colors.TOMATO
+      });
     }
   
   });
@@ -37,8 +55,8 @@ export default function useLoginContainer() {
   const { control, handleSubmit } = useForm<LoginFormType>({
     mode: "all",
     defaultValues: {
-      Email: "",
-      Password: "",
+      Email: "rebecca@yopmail.com",
+      Password: "click123",
     },
     resolver: yupResolver(
       yup.object({
@@ -46,20 +64,15 @@ export default function useLoginContainer() {
         Password: yup
           .string()
           .required(t("login_password_required"))
-          // .min(6, t("login_password_min"))
-          // .max(255, t("login_password_max")),
       })
     ),
   });
 
   const handleSubmitForm = (data: LoginFormType) => {
-    console.log(data)
-    // navigate(NavigationRoutes.AUTH_STACK.NOTIFICATION)
     const payload = {
       emailOrUserName: data.Email,
       password: data.Password,
     };
-    console.log(`payload`,payload)
     loginUser(payload);
   };
 

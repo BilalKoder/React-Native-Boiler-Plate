@@ -6,7 +6,6 @@ import InputField from '../component/InputField';
 import Input from '../component/Input';
 import LoginLogo from '../assets/logo/mainLogo.svg';
 import EmailIcon from '../assets/logo/email.png';
-import PasswordIcon from '../assets/logo/password.png';
 import AppButton from '../component/Buttons/AppButton';
 import useLoginContainer from '../containers/loginContainer/LoginContainer';
 import useEmailConfirmationContainer from '../containers/confirmationContainer/EmailConfirmation';
@@ -18,7 +17,7 @@ import NavigationRoutes from '../navigators/NavigationRoutes';
 export default function EmailConfirmation() {
     const { t } = useTranslation(["common"])
     const [titleText, setTitleText] = React.useState("Enter Email for Confirmation");
-    // const { control, handleSubmit, handleOnSignUp } = useLoginContainer();
+  
     const { control, handleSubmit } = useEmailConfirmationContainer();
     return (
       <SafeAreaView style={styles.container}>

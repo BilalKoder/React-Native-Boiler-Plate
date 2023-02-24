@@ -19,14 +19,16 @@ import {
   useBlurOnFulfill,
   useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
+import useOtpContainer from '../containers/otpContainer/OtpContainer';
 
 export default function OtpVerification() {
     const { t } = useTranslation(["common"])
     const [titleText, setTitleText] = React.useState("Enter OTP");
-    const { control, handleSubmit, handleOnSignUp } = useLoginContainer();
+    const { control, handleSubmit ,value,
+      setValue } = useOtpContainer();
     const CELL_COUNT = 4;
 
-      const [value, setValue] = useState('');
+
     const ref = useBlurOnFulfill({value, cellCount: CELL_COUNT});
     const [props, getCellOnLayoutHandler] = useClearByFocusCell({
       value,
@@ -65,7 +67,7 @@ export default function OtpVerification() {
               </View>
             )}
           />
-          <AppButton title={t('submit')} style={{marginVertical:10,borderRadius: 8,height:45}}  textStyle={{fontSize:18,fontWeight:600,lineHeight:22}}  onPress={()=> navigate(NavigationRoutes.AUTH_STACK.RESET_PASSWORD)}  />
+          <AppButton title={t('submit')} style={{marginVertical:10,borderRadius: 8,height:45}}  textStyle={{fontSize:18,fontWeight:600,lineHeight:22}}  onPress={handleSubmit}  />
         </ScrollView>
       </SafeAreaView>
     );

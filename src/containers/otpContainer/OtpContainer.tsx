@@ -1,42 +1,60 @@
-import * as yup from 'yup';
-import { ResetFormType } from "./types"
-import { useForm } from "react-hook-form"
-import { useTranslation } from "react-i18next"
-import { yupResolver } from "@hookform/resolvers/yup"
-import { navigate } from '../../services/navigationService';
+import { useMutation } from '@tanstack/react-query';
+import React from 'react';
+import Snackbar from 'react-native-snackbar';
+import { emailConfirmation, otpVerification } from '../../APIServices/Auth';
 import NavigationRoutes from '../../navigators/NavigationRoutes';
-
+import { navigate } from '../../services/navigationService';
+import { Colors } from '../../themes';
+import { APP_PRIMARY_COLOR } from '../../themes/Colors';
+import { LogBox } from 'react-native';
 
 export default function useOtpContainer() {
-    const { t } = useTranslation(["errors"])
+    const [value, setValue] = React.useState('');
 
-    const { control, handleSubmit } = useForm<ResetFormType>({
-      mode: "all",
-      defaultValues: {
-        NewPassword: "",
-        ConfirmNewPassword: "",
+    const { mutate: resetOtpConfig } = useMutation(otpVerification, {
+      onSuccess: (data) => {
+        Snackbar.show({
+          text: "OTP Verified Successfully!",
+          duration: Snackbar.LENGTH_SHORT,
+          textColor: Colors.Colors.WHITE,
+          backgroundColor: APP_PRIMARY_COLOR
+        });
+      setTimeout(() => {
+        navigate(NavigationRoutes.AUTH_STACK.RESET_PASSWORD);
+      }, 2000);
       },
-      resolver: yupResolver(
-        yup.object({
-            NewPassword: yup
-            .string()
-            .required(t("reset_password_message"))
-            .min(6, t("login_password_min"))
-            .max(255, t("login_password_max")),
-            // ConfirmNewPassword: yup.string().oneOf([yup.ref("NewPassword")], t("reset_confirm_password_message")),
-            ConfirmNewPassword: yup.string()
-            .required('Password is mendatory')
-            .oneOf([yup.ref('NewPassword')], 'Passwords does not match'),
-        })
-      ),
+      onError: (data) => {
+        LogBox.ignoreLogs([
+         data as string
+        ]);
+        Snackbar.show({
+          text: "Wrong OTP please try again!",
+          duration: Snackbar.LENGTH_SHORT,
+          textColor: Colors.Colors.WHITE,
+          backgroundColor: Colors.Colors.TOMATO
+        });
+      }
+    
     });
-
-    const handleResetForm = (data: ResetFormType) => {
-        navigate(NavigationRoutes.AUTH_STACK.NOTIFICATION)
+    const handleSubmit = () => {
+      if(value.length < 4){  
+        Snackbar.show({
+          text: "OTP must contain 4 digits",
+          duration: Snackbar.LENGTH_SHORT,
+          textColor: Colors.Colors.WHITE,
+          backgroundColor: Colors.Colors.TOMATO
+        });
+        return false;
+      }
+      const payload = {
+        code:value
+      }
+      resetOtpConfig(payload)
     }
 
     return {
-        control,
-        handleSubmit: handleSubmit(handleResetForm)
+        value,
+        setValue,
+        handleSubmit
     }
 }

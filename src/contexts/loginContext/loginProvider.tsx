@@ -13,6 +13,7 @@ export default function LoginProvider(props: LoginProviderType) {
   const setUserAuthentication = (data?: LoginResponse) => {
     if (data) {
       setItem(storage.TOKEN, data.token);
+      setItem(storage.GET_USER, data.user);
     }
     setIsAuth(true);
   }

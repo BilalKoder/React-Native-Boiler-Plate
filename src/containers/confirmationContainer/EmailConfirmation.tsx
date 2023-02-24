@@ -7,10 +7,12 @@ import { navigate } from '../../services/navigationService';
 import NavigationRoutes from '../../navigators/NavigationRoutes';
 import { ResetFormType } from '../resetContainer/types';
 import Toast from 'react-native-simple-toast';
-import { Alert } from 'react-native';
+import { Alert, LogBox } from 'react-native';
 import { useMutation } from '@tanstack/react-query';
 import { EmailConfirmationResponse, LoginResponse } from '../loginContainer/types';
 import { emailConfirmation } from '../../APIServices/Auth';
+import Snackbar from 'react-native-snackbar';
+import { Colors } from '../../themes';
 
 
 
@@ -19,11 +21,26 @@ export default function useEmailConfirmationContainer() {
 
     const { mutate: emailConf } = useMutation(emailConfirmation, {
       onSuccess: (data) => {
-        console.log('meesssssssssssssssssss',data)
-        // Toast.show(`${data}`, Toast.LONG);
+        Snackbar.show({
+          text: data,
+          duration: Snackbar.LENGTH_SHORT,
+          textColor: Colors.Colors.WHITE,
+          backgroundColor: Colors.APP_PRIMARY_COLOR
+        });
+      setTimeout(() => {
+        navigate(NavigationRoutes.AUTH_STACK.OTP_VERIFICATION);
+      }, 2000);
       },
-      onError: (data) => {
-        console.log('onError',data)
+      onError: (data:string) => {
+        LogBox.ignoreLogs([
+         data as string
+        ]);
+        Snackbar.show({
+          text: data,
+          duration: Snackbar.LENGTH_SHORT,
+          textColor: Colors.Colors.WHITE,
+          backgroundColor: Colors.Colors.TOMATO
+        });
       }
     
     });
@@ -35,7 +52,7 @@ export default function useEmailConfirmationContainer() {
       },
       resolver: yupResolver(
         yup.object({
-            Email: yup.string().email().required(t("login__email_message")),
+            Email: yup.string().email().required(t("otp__email_message")),
         })
       ),
     });

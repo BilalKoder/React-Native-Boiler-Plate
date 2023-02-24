@@ -5,10 +5,43 @@ import { useTranslation } from "react-i18next"
 import { yupResolver } from "@hookform/resolvers/yup"
 import { navigate } from '../../services/navigationService';
 import NavigationRoutes from '../../navigators/NavigationRoutes';
+import { useMutation } from '@tanstack/react-query';
+import Snackbar from 'react-native-snackbar';
+// import { Colors } from 'react-native/Libraries/NewAppScreen';
 
+import { Alert, LogBox } from 'react-native';
+import { emailConfirmation, resetPassword } from '../../APIServices/Auth';
+import { Colors } from '../../themes/Colors';
+import { APP_PRIMARY_COLOR } from "../../themes/Colors";
 
 export default function useResetContainer() {
-    const { t } = useTranslation(["errors"])
+  const { t } = useTranslation(["errors"])
+
+  const { mutate: resetConfig } = useMutation(resetPassword, {
+    onSuccess: (data) => {
+      Snackbar.show({
+        text: data,
+        duration: Snackbar.LENGTH_SHORT,
+        textColor: Colors.WHITE,
+        backgroundColor: APP_PRIMARY_COLOR
+      });
+    setTimeout(() => {
+      navigate(NavigationRoutes.AUTH_STACK.LOGIN);
+    }, 2000);
+    },
+    onError: (data:string) => {
+      LogBox.ignoreLogs([
+       data as string
+      ]);
+      Snackbar.show({
+        text: data,
+        duration: Snackbar.LENGTH_SHORT,
+        textColor: Colors.WHITE,
+        backgroundColor: Colors.TOMATO
+      });
+    }
+  
+  });
 
     const { control, handleSubmit } = useForm<ResetFormType>({
       mode: "all",
@@ -23,17 +56,20 @@ export default function useResetContainer() {
             .required(t("reset_password_message"))
             .min(6, t("login_password_min"))
             .max(255, t("login_password_max")),
-            // ConfirmNewPassword: yup.string().oneOf([yup.ref("NewPassword")], t("reset_confirm_password_message")),
             ConfirmNewPassword: yup.string()
-            .required('Password is required')
+            .required('Confirm Password is required')
             .oneOf([yup.ref('NewPassword')], 'Passwords does not match'),
         })
       ),
     });
 
     const handleResetForm = (data: ResetFormType) => {
-        navigate(NavigationRoutes.AUTH_STACK.NOTIFICATION)
-    }
+        const payload = {
+          password :data.NewPassword,
+          code :749240
+        }
+        resetConfig(payload)
+      }
 
     return {
         control,

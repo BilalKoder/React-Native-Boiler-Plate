@@ -3,15 +3,16 @@ import {
   FlatList,
   ListRenderItem,
   RefreshControl,
+  View,
 } from "react-native";
 
 import EmptyComponent from "../EmptyView";
 import SpinnerLoader from "../SmallLoader";
 import { UseInfiniteQueryResult } from "@tanstack/react-query";
-import { APP_PRIMARY_COLOR } from "../../themes/Colors";
+import { APP_PRIMARY_COLOR, Colors } from '../../themes/Colors';
 
 function defaultKeyExtractor(item: any) {
-  return `${item.id}`;
+  return `${item?.id}`;
 }
 
 type FlatListHandlerPropType = {
@@ -74,6 +75,7 @@ export default function FlatListHandler(props: FlatListHandlerPropType) {
             tintColor={APP_PRIMARY_COLOR}
           />
         ),
+        
         onRefresh: onRefresh,
         refreshing: isRefreshing,
         onEndReached: fetchMore,

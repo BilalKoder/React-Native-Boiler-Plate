@@ -29,10 +29,17 @@ export const queryClient = new QueryClient({
     queries: {
       staleTime: STALE_TIME,
       cacheTime: CACHE_TIME,
-      getNextPageParam: (lastPage: any) => {
-        if (lastPage?.filteredCount > lastPage?.offset + PAGE_SIZE) {
-          return lastPage.offset + PAGE_SIZE;
+      getNextPageParam:(lastPage: any) => { 
+        const meta = lastPage?.metadata;
+        // console.log("lastPagess: " + meta.currentPage !== meta.lastPage);
+       
+        if (meta.currentPage <= meta.lastPage) {
+          return meta.nextPage
         }
+        
+        // if (lastPage?.filteredCount > lastPage?.offset + PAGE_SIZE) {
+        //   return lastPage.offset + PAGE_SIZE;
+        // }
       },
       onError: (e) => {
         console.log("api error ", e);

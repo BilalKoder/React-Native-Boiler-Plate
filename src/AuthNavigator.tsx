@@ -11,7 +11,7 @@ export default function AuthNavigator() {
 
   return (
     <NavigationContainer ref={navigationRef}>
-      {isAuth ? (
+      {!isAuth ? (
         <AppStack initialRouteName={initialRouteName} />
       ) : (
         <AuthStack />

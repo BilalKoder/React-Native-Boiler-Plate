@@ -51,11 +51,11 @@ export default function AuthStack() {
               getComponent={() => require('../screens/ResetPassword').default}
             />
 
-        <Stack.Screen
+        {/* <Stack.Screen
               options={{ title: t("NOTIFICATION"),headerShown: false  }}
               name={NavigationRoutes.AUTH_STACK.NOTIFICATION}
               getComponent={() => require('../screens/NotificationSceen').default}
-            />
+            /> */}
 
       </Stack.Navigator>
     );

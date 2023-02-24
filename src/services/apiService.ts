@@ -54,7 +54,18 @@ function handleResponse(response: ApiResponse<any>) {
       errorCode: Utils.getValue(response.data, 'response.errorCode', HTTP_STATUS.BAD_REQUEST),
     },
   };
+
+
+  
   const data = Utils.getValue(response.data, 'data', response.data);
+  const meta = {
+    currentPage: response.data?.currentPage,
+    lastPage: response.data?.lastPage,
+    nextPage: response.data?.nextPage
+  }
+
+  console.log("meta.............", meta);
+  
 
  
   if (response.status === HTTP_STATUS.UNAUTHORIZED) {
@@ -72,7 +83,7 @@ function handleResponse(response: ApiResponse<any>) {
     };
   }
   if (response.ok) {
-    return {...mutatedResponse, data};
+    return {...mutatedResponse, data, metadata: meta};
   } else {
     return {
       ...mutatedResponse,
@@ -83,7 +94,7 @@ function handleResponse(response: ApiResponse<any>) {
 
 apiSauceInstance.addRequestTransform((request) => {
   const token = getItem(STORAGE_KEY.TOKEN);
-  request.headers["AUTHORIZATION"] = `${token}`;
+  request.headers["AUTHORIZATION"] = `Bearer ${token}`;
   request.headers["Content-Type"] = CONTENT_TYPE.JSON;
 });
 

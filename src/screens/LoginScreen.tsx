@@ -12,11 +12,12 @@ import useLoginContainer from '../containers/loginContainer/LoginContainer';
 import { Colors, Fonts } from '../themes';
 import { navigate } from '../services/navigationService';
 import NavigationRoutes from '../navigators/NavigationRoutes';
+import { IconButton } from '@chakra-ui/react';
 
 export default function LoginScreen() {
     const { t } = useTranslation(["common"])
     const [titleText, setTitleText] = React.useState("Sign in to Your Account");
-    const { control, handleSubmit, handleOnSignUp } = useLoginContainer();
+    const { control, handleSubmit } = useLoginContainer();
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.content} bounces={false}>
